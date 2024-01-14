@@ -2,25 +2,17 @@ import { useState, useEffect, useCallback } from "react";
 import { useGetPokemonByIdQuery } from "./api/pokemonApiSlice";
 
 import "./App.css";
-import pokemonLogo from "./assets/pokemonLogo.svg";
 
 import Button from "./components/button/button";
 import Alphabet from "./components/alphabet/alphabet";
 import PokemonImage from "./components/pokemonImage/pokemonImage";
-
-const pokemon = Math.floor(Math.random() * 150) + 1;
-
-const GameResult = ({ isGameOver, isWin }) => {
-  if (isGameOver) {
-    return <h1 className="pokeFont">Game over! Try again</h1>;
-  } else if (isWin) {
-    return <h1 className="pokeFont">You win! Catch a new Pokemon</h1>;
-  } else {
-    return <h1 className="pokeFont">What is </h1>;
-  }
-};
+import MaskedWord from "./components/maskedWord/maskedWord";
+import GameResult from "./components/gameresult/gameresult";
+import { pokemonNumber } from "./utilities/utilities";
+// import { useSelector } from "react-redux";
 
 function App() {
+  //   const pokemonNumber = useSelector((state) => state.pokemonNumber.value);
   const {
     data = {
       name: "",
@@ -28,28 +20,21 @@ function App() {
     },
     isLoading,
     isSuccess,
-  } = useGetPokemonByIdQuery(pokemon);
+  } = useGetPokemonByIdQuery(pokemonNumber);
 
   const [guessWord, setGuessWord] = useState([]);
   const pokemonName = data.name;
-  console.log(pokemonName);
+  console.log(pokemonName, pokemonNumber);
 
-  // Create isGameWinner
+  // isGameWinner
   const isWin = pokemonName
     .split("")
     .every((letter) => guessWord.includes(letter));
 
-  const getPokemonId = () => pokemon;
-
-  const maskedWord = (word) =>
-    word
-      .split("")
-      .map((letter) => (guessWord.includes(letter) ? letter : "_"))
-      .join(" ");
-
   const wrongGuess = guessWord.filter(
     (letter) => !pokemonName.includes(letter)
   );
+  //   isGameOver
   const isGameOver = wrongGuess.length >= 6;
 
   const addGuessedLetter = useCallback(
@@ -75,7 +60,7 @@ function App() {
     return () => {
       document.removeEventListener("keypress", handler);
     };
-  }, []);
+  }, [guessWord]);
 
   //   useEffect(() => {
   //     const handler = (e) => {
@@ -104,9 +89,6 @@ function App() {
     <div className="mainAppDiv">
       <div>
         {isSuccess && <GameResult isGameOver={isGameOver} isWin={isWin} />}
-        <div className="card">
-          <img src={pokemonLogo} className="logo" alt="Pokemon logo" />
-        </div>
       </div>
       <div className="card">
         {isLoading && "Please, wait!"}
@@ -115,10 +97,14 @@ function App() {
             <PokemonImage
               imageData={data.sprites.other.dream_world.front_default}
             />
-            <h3>{maskedWord(pokemonName)}</h3>
+            <MaskedWord
+              word={pokemonName}
+              guessWord={guessWord}
+              isGameOver={isGameOver}
+            />
           </div>
         ) : (
-          <Button name="Play a game!" actionHandler={getPokemonId} />
+          <Button name="Play a game!" />
         )}
       </div>
       <div className="alphabetAppDiv">

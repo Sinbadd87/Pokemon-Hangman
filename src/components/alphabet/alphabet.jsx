@@ -32,19 +32,19 @@ const Alphabet = ({ addGuessedLetter, activeLetters, inactiveLetters }) => {
   ];
   return (
     <div className="alphabetDiv">
-      {alphabet.map((key) => {
-        const isActive = activeLetters.includes(key);
-        const isInactive = inactiveLetters.includes(key);
+      {alphabet.map((letter) => {
+        const isActive = activeLetters.includes(letter);
+        const isInactive = inactiveLetters.includes(letter);
         return (
           <button
-            onClick={() => addGuessedLetter(key)}
+            onClick={() => addGuessedLetter(letter)}
             disabled={isInactive || isActive}
-            key={key}
+            key={letter}
             className={`${"btn"} ${isActive ? "active" : ""} ${
               isInactive ? "inactive" : ""
             }`}
           >
-            {key}
+            {letter}
           </button>
           //   <Button
           //     key={key}
