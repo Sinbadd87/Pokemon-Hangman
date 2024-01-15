@@ -1,0 +1,18 @@
+.btnInverted {
+    background-color: aliceblue;
+    color: dodgerblue;
+    border: dodgerblue solid 3px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.btnInverted:hover {
+    background-color: gold;
+    color: dodgerblue;
+}
+
+.btnSmall {
+    width: 10rem;
+    height: 4rem;
+}

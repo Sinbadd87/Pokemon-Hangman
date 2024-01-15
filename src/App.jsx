@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetPokemonByIdQuery } from "./api/pokemonApiSlice";
+import { getPokemonNumber } from "./app/features/pokemonNumberSlice";
 
 import "./App.css";
 
@@ -8,11 +10,11 @@ import Alphabet from "./components/alphabet/alphabet";
 import PokemonImage from "./components/pokemonImage/pokemonImage";
 import MaskedWord from "./components/maskedWord/maskedWord";
 import GameResult from "./components/gameresult/gameresult";
-import { pokemonNumber } from "./utilities/utilities";
-// import { useSelector } from "react-redux";
+// import { pokemonNumber } from "./utilities/utilities";
 
 function App() {
-  //   const pokemonNumber = useSelector((state) => state.pokemonNumber.value);
+  const dispatch = useDispatch();
+  const pokemonNumber = useSelector((state) => state.pokemonNumber.value);
   const {
     data = {
       name: "",
@@ -62,37 +64,24 @@ function App() {
     };
   }, [guessWord]);
 
-  //   useEffect(() => {
-  //     const handler = (e) => {
-  //       const key = e.key;
-  //       if (key !== "Enter") return;
-
-  //       e.preventDefault();
-  //       setGuessWord([]);
-  //     };
-
-  //     document.addEventListener("keypress", handler);
-
-  //     return () => {
-  //       document.removeEventListener("keypress", handler);
-  //     };
-  //   }, []);
-
-  //   const onWordGuessHandler = (e) => {
-  //     const letter = e.target.value.toLowerCase();
-  //     if (isSuccess && data.name.includes(letter)) {
-  //       setGuessWord([...guessWord, letter]);
-  //     }
-  //   };
-
   return (
     <div className="mainAppDiv">
       <div>
         {isSuccess && <GameResult isGameOver={isGameOver} isWin={isWin} />}
+        {isWin || isGameOver ? (
+          <Button
+            className={"btnInverted btnSmall"}
+            name="Play again!"
+            actionHandler={() => {
+              dispatch(getPokemonNumber());
+              setGuessWord([]);
+            }}
+          />
+        ) : null}
       </div>
       <div className="card">
         {isLoading && "Please, wait!"}
-        {isSuccess ? (
+        {isSuccess && (
           <div>
             <PokemonImage
               imageData={data.sprites.other.dream_world.front_default}
@@ -103,8 +92,6 @@ function App() {
               isGameOver={isGameOver}
             />
           </div>
-        ) : (
-          <Button name="Play a game!" />
         )}
       </div>
       <div className="alphabetAppDiv">
